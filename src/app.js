@@ -17,7 +17,9 @@ angular
     console.error = decoratedLog(consoleOld.error);
 
     function decoratedLog(consoleOld) {
-      (logArray.length > 20) ? logArray.shift() : angular.noop();
-      consoleOld.apply(console, arguments);
+      return function() {
+        (logArray.length > 20) ? logArray.shift() : angular.noop();
+        consoleOld.apply(console, arguments);
+      };
     }
   });
