@@ -4,21 +4,25 @@
 export default class LogDecoratorProvider {
   constructor() {
     this._logArray = [];
+    this.active = false;
+  }
+  activate() {
     const consoleOld = {
       log: console.log,
       debug: console.debug,
       warn: console.warn,
       error: console.error
     };
-    console.log   = (...args) => { this.addLog(args); consoleOld.log(...args);};
-    console.debug = (...args) => { this.addLog(args); consoleOld.debug(...args);};
-    console.warn  = (...args) => { this.addLog(args); consoleOld.warn(...args);};
-    console.error = (...args) => { this.addLog(args); consoleOld.error(...args);};
+    this.active = true;
+    console.log   = (...args) => { this._addLog(args); consoleOld.log(...args);};
+    console.debug = (...args) => { this._addLog(args); consoleOld.debug(...args);};
+    console.warn  = (...args) => { this._addLog(args); consoleOld.warn(...args);};
+    console.error = (...args) => { this._addLog(args); consoleOld.error(...args);};
   }
-  get logArray() {
-    return this._logArray;
-  }
-  addLog(msg) {
+  // get logArray() {
+  //   return this._logArray;
+  // }
+  _addLog(msg) {
     (this._logArray.length > 20) ? this._logArray.shift() : '';
     this._logArray.push(msg);
   }
@@ -26,16 +30,10 @@ export default class LogDecoratorProvider {
     'ngInject';
     return {
       logToClipboard: (beautify) => {
+        if (!this.active){
+          return;
+        }
         const textArea = document.createElement('textarea');
-        // textArea.style.top = 0;
-        // textArea.style.left = 0;
-        // textArea.style.width = '2em';
-        // textArea.style.height = '2em';
-        // textArea.style.padding = 0;
-        // textArea.style.border = 'none';
-        // textArea.style.outline = 'none';
-        // textArea.style.boxShadow = 'none';
-        // textArea.style.background = 'transparent';
         textArea.value = '';
         angular.forEach(this.logArray, (log) => {
           angular.forEach(log, (line) => {
