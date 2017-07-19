@@ -35,7 +35,7 @@ export default class LogDecoratorProvider {
         }
         const textArea = document.createElement('textarea');
         textArea.value = '';
-        angular.forEach(this.logArray, (log) => {
+        angular.forEach(this._logArray, (log) => {
           angular.forEach(log, (line) => {
             if (angular.isString(line)){
               textArea.value += line + '\n';
